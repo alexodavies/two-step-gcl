@@ -21,9 +21,9 @@ class GInfoMinMax(torch.nn.Module):
 				if m.bias is not None:
 					m.bias.data.fill_(0.0)
 
-	def forward(self, batch, x, edge_index, edge_attr, edge_weight=None):
+	def forward(self, batch, x, edge_index, edge_attr, edge_weight=None, training = False):
 
-		z, node_emb = self.encoder(batch, x, edge_index, edge_attr, edge_weight)
+		z, node_emb = self.encoder(batch, x, edge_index, edge_attr, edge_weight, training = training)
 
 		z = self.proj_head(z)
 		# z shape -> Batch x proj_hidden_dim

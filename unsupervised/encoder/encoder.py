@@ -157,7 +157,7 @@ class Encoder(torch.nn.Module):
 		# compute graph embedding using pooling
 		if self.pooling_type == "standard":
 			xpool = global_add_pool(x, batch)
-			return xpool, x
+			return normalize_l2(xpool), x
 
 		elif self.pooling_type == "layerwise":
 			xpool = [global_add_pool(x, batch) for x in xs]

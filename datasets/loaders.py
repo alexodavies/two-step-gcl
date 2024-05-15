@@ -14,25 +14,34 @@ from datasets.lattice_dataset import LatticeDataset
 from datasets.from_ogb_dataset import FromOGBDataset
 
 
+
+
 def get_chemical_datasets(transforms, num, stage="train"):
     if "original_datasets" not in os.listdir():
         os.mkdir("original_datasets")
+    print(f"stage: {stage}")
 
-    if stage == "train":
+    if stage == "train" or stage == "train-adgcl":
         names = ["ogbg-molpcba"]
     else:
+        print("Not train stage")
         names = ["ogbg-molesol", "ogbg-molclintox",
                  "ogbg-molfreesolv", "ogbg-mollipo", "ogbg-molhiv",
                 "ogbg-molbbbp", "ogbg-molbace",
                  ]
 
+    print(f"Molecular datasets: {names}")
     datasets = [PygGraphPropPredDataset(name=name, root='./original_datasets/', transform=transforms) for name in names]
-
+    print(datasets)
     split_idx = [data.get_idx_split() for data in datasets]
 
     if stage == "val":
         train_datasets = [data[split_idx[i]["train"]] for i, data in enumerate(datasets)]
         val_datasets = [data[split_idx[i]["valid"]] for i, data in enumerate(datasets)]
+
+    elif stage == "train-adgcl":
+        datasets = [data[split_idx[i]["train"]] for i, data in enumerate(datasets)]
+
     else:
         datasets = [data[split_idx[i][stage]] for i, data in enumerate(datasets)]
 
@@ -151,7 +160,8 @@ def get_random_datasets(transforms, num, stage = "train"):
 def get_train_loader(batch_size, transforms,
                      subset = ["chemical", "social"],
                      num_social = 50000,
-                     social_excludes = None):
+                     social_excludes = None,
+                     for_adgcl = False):
     """
     Prepare a torch concat dataset dataloader
     Args:
@@ -163,6 +173,15 @@ def get_train_loader(batch_size, transforms,
     Returns:
         dataloader for concat dataset
     """
+
+    # Need a dataset with all features included for adgcl pre-training
+    if for_adgcl:
+        datasets, _ = get_chemical_datasets(transforms, num_social, stage="train-adgcl")
+        combined = []
+        for data in datasets:
+            combined += data
+        return DataLoader(combined, batch_size=batch_size, shuffle=True)
+
     if "chemical" in subset:
         datasets, _ = get_chemical_datasets(transforms, num_social, stage="train")
     else:
@@ -211,10 +230,55 @@ def get_test_loaders(batch_size, transforms, num = 2000):
 
     return datasets, names
 
-def get_test_datasets(transforms, num = 2000):
+def get_mol_test_loaders(batch_size, transforms, num = 2000):
+    """
+    Get a list of validation loaders
+
+    Args:
+        dataset: the -starting dataset-, a hangover from previous code, likely to be gone in the next refactor
+        batch_size: batch size for loaders
+        transforms: a set of transforms applied to the data
+        num: the maximum number of samples in each dataset (and therefore dataloader)
+
+    Returns:
+        datasets: list of dataloaders
+        names: name of each loaders' respective dataset
+
+    """
+
+    datasets, names = get_test_datasets(transforms, num=-1, mol_only = True)
+    datasets = [DataLoader(data, batch_size=batch_size) for data in datasets]
+
+    return datasets, names
+
+def get_mol_val_loaders(batch_size, transforms, num = 5000):
+    """
+    Get a list of validation loaders
+
+    Args:
+        batch_size: batch size for loaders
+        transforms: a set of transforms applied to the data
+        num: the maximum number of samples in each dataset (and therefore dataloader)
+
+    Returns:
+        datasets: list of dataloaders
+        names: name of each loaders' respective dataset
+
+    """
+
+    datasets, names = get_val_datasets(transforms, num = -1, mol_only = True)
+    datasets = [DataLoader(data, batch_size=batch_size) for data in datasets]
+
+    return datasets, names
+
+def get_test_datasets(transforms, num = 2000, mol_only = False):
 
     chemical_datasets, ogbg_names = get_chemical_datasets(transforms, num, stage="test")
-    social_datasets, social_names = get_social_datasets(transforms, num, stage="test")
+    if not mol_only:
+        social_datasets, social_names = get_social_datasets(transforms, num, stage="test")
+    else:
+        social_datasets = []
+        social_names = []
 
     datasets = chemical_datasets + social_datasets
 
@@ -240,19 +304,27 @@ def get_val_loaders(batch_size, transforms, num = 5000):
 
     return datasets, names
 
-def get_val_datasets(transforms, num = 2000):
-
+def get_val_datasets(transforms, num = 2000, mol_only = False):
+    print("Getting val datasets")
     chemical_datasets, ogbg_names = get_chemical_datasets(transforms, num, stage="val")
-    social_datasets, social_names = get_social_datasets(transforms, num, stage="val")
+    if not mol_only:
+        social_datasets, social_names = get_social_datasets(transforms, num, stage="val")
+    else:
+        social_datasets = []
+        social_names = []
 
     datasets = chemical_datasets + social_datasets
 
     return datasets, ogbg_names + social_names
 
 def get_train_datasets(transforms, num = 2000):
-
+    
     chemical_datasets, ogbg_names = get_chemical_datasets(transforms, num, stage="train")
-    social_datasets, social_names = get_social_datasets(transforms, num, stage="train")
+    if not mol_only:
+        social_datasets, social_names = get_social_datasets(transforms, num, stage="train")
+    else:
+        social_datasets = []
+        social_names = []
 
     datasets = chemical_datasets + social_datasets
 

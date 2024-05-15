@@ -70,7 +70,8 @@ class FromOGBDataset(InMemoryDataset):
         self.stage = stage
         self.stage_to_index = {"train":0,
                                "val":1,
-                               "test":2}
+                               "test":2,
+                               "train-adgcl":3}
         self.num = num
         print(f"Converting OGB stage {self.stage}")
         super().__init__(root, transform, pre_transform, pre_filter)
@@ -84,7 +85,8 @@ class FromOGBDataset(InMemoryDataset):
     def processed_file_names(self):
         return ['train.pt',
                 'val.pt',
-                'test.pt']
+                'test.pt',
+                'train-adgcl.pt']
 
 
     def process(self):

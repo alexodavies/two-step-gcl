@@ -1,5 +1,5 @@
 from .encoder import Encoder, NodeEncoder
 from .transfer_model import TransferModel
-from .featured_transfer_model import FeaturedTransferModel, GenericEdgeEncoder, GenericNodeEncoder
+from .featured_transfer_model import FeaturedTransferModel, GenericEdgeEncoder, GenericNodeEncoder, FeaturedEncoder, normalize_l2
 from .node_classification_transfer_model import NodeClassificationTransferModel
 from .edge_prediction_transfer_model import EdgePredictionTransferModel

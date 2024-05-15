@@ -23,9 +23,9 @@ class ViewLearner(torch.nn.Module):
 				if m.bias is not None:
 					m.bias.data.fill_(0.0)
 
-	def forward(self, batch, x, edge_index, edge_attr):
+	def forward(self, batch, x, edge_index, edge_attr, training = False):
 
-		_, node_emb = self.encoder(batch, x, edge_index, edge_attr)
+		_, node_emb = self.encoder(batch, x, edge_index, edge_attr, training=training)
 
 		src, dst = edge_index[0], edge_index[1]
 		emb_src = node_emb[src]

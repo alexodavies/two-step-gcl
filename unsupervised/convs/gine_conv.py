@@ -39,6 +39,8 @@ class GINEConv(MessagePassing):
             assert x[0].size(-1) == edge_attr.size(-1)
         elif isinstance(edge_index, SparseTensor):
             assert x[0].size(-1) == edge_index.size(-1)
+        
+        vals, counts = torch.unique(edge_weight, return_counts = True)
 
         # propagate_type: (x: OptPairTensor, edge_attr: OptTensor)
         out = self.propagate(edge_index, x=x, edge_attr=edge_attr, edge_weight=edge_weight, size=size)

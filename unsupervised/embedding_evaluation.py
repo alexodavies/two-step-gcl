@@ -77,6 +77,7 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
     return texts
 
 def get_emb_y(loader, encoder, device, dtype='numpy', is_rand_label=False, every = 1, node_features = False):
+	
 	x, y = encoder.get_embeddings(loader, device, is_rand_label, every = every, node_features = node_features)
 	if dtype == 'numpy':
 		return x,y
@@ -526,8 +527,9 @@ class GeneralEmbeddingEvaluation():
 		self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
 	def embedding_evaluation(self, encoder, train_loaders, val_loaders, names,
-							 use_wandb=True, node_features = False, not_in_training = False):
-
+							 use_wandb=True, node_features = False, not_in_training = False,
+							 mols_only = False):
+		print(names)
 		train_all_embeddings, train_separate_embeddings = self.get_embeddings(encoder, train_loaders, node_features=node_features)
 		val_all_embeddings, val_separate_embeddings = self.get_embeddings(encoder, val_loaders, node_features=node_features)
 
@@ -538,11 +540,14 @@ class GeneralEmbeddingEvaluation():
 		total_score = 0.
 
 		for i_embedding, val_embedding in enumerate(val_separate_embeddings):
+			name = names[i_embedding]
+
+
 			val_loader = val_loaders[i_embedding]
 			train_loader = train_loaders[i_embedding]
 			train_embedding = train_separate_embeddings[i_embedding]
 
-			name = names[i_embedding]
+			
 			evaluator = TargetEvaluation()
 			try:
 				score = evaluator.evaluate(train_embedding, val_embedding, train_loader, val_loader, name)
