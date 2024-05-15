@@ -175,6 +175,8 @@ class FeaturedTransferModel(torch.nn.Module):
 
 		self.convolution = encoder.convolution
 
+		self.init_emb()
+
 
 	def init_emb(self):
 		"""

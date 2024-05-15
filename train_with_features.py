@@ -328,8 +328,7 @@ def run(args):
     test_loaders, names = get_mol_test_loaders(args.batch_size, my_transforms)
 
     atom_feature_dims, bond_feature_dims = get_total_mol_onehot_dims()
-    encoder = Encoder(emb_dim=args.emb_dim, num_gc_layers=args.num_gc_layers, drop_ratio=args.drop_ratio,
-                    pooling_type=args.pooling_type, convolution=args.backbone)
+
     if checkpoint == "untrained":
         checkpoint_path = "untrained"
 
@@ -351,18 +350,18 @@ def run(args):
 
         args = wandb_cfg_to_actual_cfg(args, wandb_cfg)
 
-        print(f"Loading state dict from: {checkpoint_path}")
-        model_dict = torch.load(checkpoint_path, map_location=torch.device('cpu'))
-        encoder.load_state_dict(model_dict['encoder_state_dict'], strict=False)
-        print("Loaded state!")
+
 
 
     
-
+    encoder = Encoder(emb_dim=args.emb_dim, num_gc_layers=args.num_gc_layers, drop_ratio=args.drop_ratio,
+                    pooling_type=args.pooling_type, convolution=args.backbone)
     feature_model = FeaturedEncoder(
                 encoder,
                 proj_hidden_dim=args.emb_dim, output_dim=args.emb_dim, features=evaluation_node_features,
                 node_feature_dim=atom_feature_dims, edge_feature_dim=bond_feature_dims)
+
+
 
 
     # # View learner and encoder use the same basic architecture
@@ -372,6 +371,12 @@ def run(args):
         # View learner and encoder use the same basic architecture
     model = GInfoMinMax(feature_model,
                         proj_hidden_dim=args.proj_dim).to(device)
+
+    if checkpoint_path != "untrained":
+        print(f"Loading state dict from: {checkpoint_path}")
+        model_dict = torch.load(checkpoint_path, map_location=torch.device('cpu'))
+        model.load_state_dict(model_dict['encoder_state_dict'], strict=False)
+        print("Loaded state!")
     model_optimizer = torch.optim.Adam(model.parameters(), lr=args.model_lr)
 
 
@@ -503,29 +508,29 @@ def arg_parse():
 
 
     parser.add_argument(
-        '-c',
         '--no-molecules',
+        '-c',
         action='store_true',
         help='Whether to include molecules in training data',
     )
 
     parser.add_argument(
-        '-s',
         '--no-socials',
+        '-s',
         action='store_true',
         help='Whether to include social (ie all other) graphs in training data',
     )
 
     parser.add_argument(
-        '-re',
         '--random-edge-views',
+        '-re',
         action='store_true',
         help='Whether to use random edge dropping',
     )
 
     parser.add_argument(
-        '-rn',
         '--random-node-views',
+        '-rn',
         action='store_true',
         help='Whether to use random node dropping',
     )
@@ -566,6 +571,6 @@ if __name__ == '__main__':
 
 
     # Change to offline=False to track model training with weights and biases
-    args = setup_wandb(args, name = name + '-' + args.backbone, offline=False)
+    args = setup_wandb(args, name = name + '-' + args.backbone + f'-{args.checkpoint[:-2]}', offline=False)
     run(args)
 
