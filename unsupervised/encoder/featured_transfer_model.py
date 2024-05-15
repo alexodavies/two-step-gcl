@@ -232,6 +232,8 @@ class FeaturedTransferModel(torch.nn.Module):
 		node_emb = x
 		z = global_add_pool(x, batch)
 
+		normalize_l2(z)
+
 		z = self.output_layer(z)
 		return z, node_emb
 

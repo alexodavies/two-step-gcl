@@ -176,7 +176,7 @@ def get_train_loader(batch_size, transforms,
 
     # Need a dataset with all features included for adgcl pre-training
     if for_adgcl:
-        datasets, _ = get_chemical_datasets(transforms, num_social, stage="train-adgcl")
+        datasets, _ = get_chemical_datasets(transforms, -1, stage="train-adgcl")
         combined = []
         for data in datasets:
             combined += data
