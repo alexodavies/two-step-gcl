@@ -33,7 +33,7 @@ from torch_geometric.transforms import Compose
 from tqdm import tqdm
 
 from utils import setup_wandb, wandb_cfg_to_actual_cfg, get_total_mol_onehot_dims
-from datasets.loaders import get_val_loaders, get_test_loaders
+from datasets.loaders import get_val_loaders, get_test_loaders, get_mol_test_loaders, get_mol_val_loaders
 
 
 from sklearn.metrics import roc_auc_score, mean_squared_error
@@ -320,8 +320,10 @@ def run(args):
 
     # Get datasets
     my_transforms = Compose([initialize_edge_weight])
-    test_loaders, names = get_test_loaders(args.batch_size, my_transforms, num=num)
-    val_loaders, names = get_val_loaders(args.batch_size, my_transforms, num=2*num)
+
+    test_loaders, names = get_mol_test_loaders(args.batch_size, my_transforms, num=num)
+    val_loaders, names = get_mol_val_loaders(args.batch_size, my_transforms, num=2*num)
+
     model_name = checkpoint_path.split("/")[-1].split(".")[0]
 
 
