@@ -294,6 +294,8 @@ def run(args):
     random_dropping = True if random_edge_dropping or random_node_dropping else False
     drop_proportion = args.dropped
 
+    epochs = int(args.epochs)
+
     # Whether to include node labels in evaluation
     evaluation_node_features = True # args.node_features
 
@@ -416,7 +418,7 @@ def run(args):
     view_regs = []
 
     # Training loop
-    for epoch in tqdm(range(1, args.epochs + 1)):
+    for epoch in tqdm(range(1, epochs + 1)):
         fin_model_loss = 0.
         fin_view_loss = 0.
         fin_reg = 0.
