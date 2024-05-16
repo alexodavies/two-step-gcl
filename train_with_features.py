@@ -372,12 +372,8 @@ def run(args):
     model = GInfoMinMax(feature_model,
                         proj_hidden_dim=args.proj_dim).to(device)
 
-    if checkpoint_path != "untrained":
-        print(f"Loading state dict from: {checkpoint_path}")
-        model_dict = torch.load(checkpoint_path, map_location=torch.device('cpu'))
-        model.load_state_dict(model_dict['encoder_state_dict'], strict=False)
-        print("Loaded state!")
-    model_optimizer = torch.optim.Adam(model.parameters(), lr=args.model_lr)
+
+    
 
 
     # Only need a view learner for adversarial training
@@ -394,6 +390,16 @@ def run(args):
         view_learner = ViewLearner(view_feature_model,
                                 mlp_edge_model_dim=args.mlp_edge_model_dim).to(device)
         view_optimizer = torch.optim.Adam(view_learner.parameters(), lr=args.view_lr)
+
+
+    if checkpoint_path != "untrained":
+        print(f"Loading state dict from: {checkpoint_path}")
+        model_dict = torch.load(checkpoint_path, map_location=torch.device('cpu'))
+        model.load_state_dict(model_dict['encoder_state_dict'], strict=False)
+
+        view_learner.load_state_dict(model_dict['view_state_dict'], strict = False)
+        print("Loaded state!")
+    model_optimizer = torch.optim.Adam(model.parameters(), lr=args.model_lr)    
 
     # General evaluation - handles multiple downstream tasks during validation
     # This includes both regression and classification based on the graph labels present
