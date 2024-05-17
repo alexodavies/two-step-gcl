@@ -23,7 +23,7 @@ class GInfoMinMax(torch.nn.Module):
 
 	def forward(self, batch, x, edge_index, edge_attr, edge_weight=None, training = False):
 
-		z, node_emb = self.encoder(batch, x, edge_index, edge_attr, edge_weight, training = training)
+		z, node_emb = self.encoder(batch, x, edge_index, edge_attr, edge_weight)
 
 		z = self.proj_head(z)
 		# z shape -> Batch x proj_hidden_dim
