@@ -25,7 +25,7 @@ class ViewLearner(torch.nn.Module):
 
 	def forward(self, batch, x, edge_index, edge_attr, training = False):
 
-		_, node_emb = self.encoder(batch, x, edge_index, edge_attr, training=training)
+		_, node_emb = self.encoder(batch, x, edge_index, edge_attr)
 
 		src, dst = edge_index[0], edge_index[1]
 		emb_src = node_emb[src]
