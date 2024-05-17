@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from ogb.graphproppred.mol_encoder import AtomEncoder, BondEncoder
 from torch.nn import Sequential, Linear, ReLU
 from torch_geometric.nn import global_add_pool
+from unsupervised.encoder import normalize_l2
 
 from unsupervised.convs import GINEConv
 from torch_geometric.nn import GATv2Conv, GCNConv
