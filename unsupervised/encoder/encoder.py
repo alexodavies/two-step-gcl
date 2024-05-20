@@ -6,27 +6,8 @@ from torch.nn import Sequential, Linear, ReLU
 from torch_geometric.nn import global_add_pool
 from unsupervised.convs import GINEConv
 from torch_geometric.nn import GATv2Conv, GCNConv
+from utils import normalize_l2
 
-def normalize_l2(input_tensor):
-    """
-    Normalize an (N x D) tensor with the L2 norm.
-
-    Parameters:
-    input_tensor (torch.Tensor): Input tensor of shape (N, D)
-
-    Returns:
-    torch.Tensor: Normalized tensor of shape (N, D)
-    """
-    # Compute the L2 norm for each vector
-    l2_norm = torch.linalg.vector_norm(input_tensor, ord=2, dim=1, keepdim=True)
-    
-    # Avoid division by zero by creating a mask
-    l2_norm = l2_norm + (l2_norm == 0) * 1e-10
-    
-    # Normalize the input tensor
-    normalized_tensor = input_tensor / l2_norm
-    
-    return normalized_tensor
 
 class Encoder(torch.nn.Module):
 	"""
