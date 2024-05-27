@@ -359,7 +359,9 @@ def run(args):
 
 
     model_name = checkpoint_path.split("/")[-1].split(".")[0]
-    setup_wandb(args, name = args.backbone + "-graph-full-features-" + model_name + "-features" if evaluation_node_features else args.backbone + "-" + model_name)
+    setup_wandb(args,
+                 name = args.backbone + "-graph-full-features-" + model_name + "-features" if evaluation_node_features else args.backbone + "-" + model_name,
+                 offline=args.no_wandb)
     wandb.log({"Transfer":True})
     wandb.log({"Model Name": model_name + "-features" if evaluation_node_features else model_name})
 
@@ -570,6 +572,9 @@ def arg_parse():
 
     parser.add_argument('--redo_views', type=bool, default=False,
                         help='Whether to re-vis views')
+    
+    parser.add_argument('--no_wandb', type=bool, default=False,
+                        help='Whether to have wandb online')
 
     parser.add_argument('--checkpoint', type=str, default="latest", help='Either the name of the trained model checkpoint in ./outputs/, or latest for the most recent trained model in ./wandb/latest-run/files')
 
