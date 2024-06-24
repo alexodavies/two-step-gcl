@@ -168,7 +168,6 @@ def run(args):
     logging.info("Using Device: %s" % device)
     logging.info("Seed: %d" % args.seed)
     logging.info(args)
-    # setup_seed(args.seed)
 
     # Get datasets
     my_transforms = Compose([initialize_edge_weight])
@@ -176,26 +175,6 @@ def run(args):
     train_datasets, train_names = get_train_datasets(my_transforms)
     val_datasets, val_names = get_val_datasets(my_transforms)
     test_datasets, _ = get_test_datasets(my_transforms)
-
-
-    # for i_dataset, dataset in enumerate(train_datasets):
-    #     arrays, metrics, names = get_metric_values(dataset)
-    #     if i_dataset == 0:
-    #         print_string = " & Split & Num. Graphs "
-    #         for name in names:
-    #             print_string += f"& {name}"
-    #         print(print_string + r"\\")
-    #
-    #
-    #     print_string = f"{train_names[i_dataset]} & Train & {len(dataset)} "
-    #     for i_name, name in enumerate(names):
-    #         value, dev = np.mean(arrays[i_name]), np.std(arrays[i_name])
-    #         value = float('%.3g' % value)
-    #         dev = float('%.3g' % dev)
-    #         print_string += f"& {value} $\pm$ {dev} "
-    #     print(print_string + r"\\")
-
-    print("\n\n")
 
     for i_dataset, dataset in enumerate(val_datasets):
         arrays, metrics, names = get_metric_values(dataset)
@@ -222,22 +201,6 @@ def run(args):
             dev = float('%.3g' % dev)
             print_string += f"& {value} $\pm$ {dev}"
         print(print_string + r"\\")
-    # train_arrays, metrics,  metric_names = get_metric_values(train_datasets)
-    # val_arrays, _, __ = get_metric_values(val_datasets)
-    # test_arrays, _, __ = get_metric_values(test_datasets)
-
-    # by_dataset_metrics = {metric_names[i]:[train_arrays[i], val_arrays[i], test_arrays[i]] for i in range(len(train_arrays))}
-
-
-
-
-
-
-
-
-
-
-
 
 def arg_parse():
     parser = argparse.ArgumentParser(description='AD-GCL ogbg-mol*')

@@ -94,9 +94,9 @@ def download_cora(visualise = False):
 
 
 def get_cora_dataset(num = 2000, targets = False):
-    fb_graph = download_cora()
+    cora_graph = download_cora()
     # print(fb_graph.nodes(data=True))
-    nx_graph_list = ESWR(fb_graph, num, 48)
+    nx_graph_list = ESWR(cora_graph, num, 48)
 
     # loader = pyg.loader.DataLoader([pyg.utils.from_networkx(g, group_node_attrs=all, group_edge_attrs=all) for g in nx_graph_list],
     #                                           batch_size=batch_size)
