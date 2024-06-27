@@ -16,6 +16,7 @@ import wandb
 from tqdm import tqdm
 
 from sklearn.linear_model import Ridge, RidgeClassifier, LogisticRegression, LinearRegression
+from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.metrics import f1_score, roc_auc_score, mean_squared_error
 
 def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
@@ -477,9 +478,11 @@ class TargetEvaluation():
 
 	def setup_models(self):
 		if self.task == "classification":
-			self.model = LogisticRegression(dual=False, fit_intercept=True)
+			self.model = MLPClassifier(hidden_layer_sizes=(100,), max_iter=200)
+			# self.model = LogisticRegression(dual=False, fit_intercept=True)
 		elif self.task == "regression":
-			self.model = LinearRegression()#Ridge(fit_intercept=True, copy_X=True)
+			self.model = MLPRegressor(hidden_layer_sizes=(100,), max_iter=200)
+			# self.model = LinearRegression()#Ridge(fit_intercept=True, copy_X=True)
 
 
 	def tidy_labels(self, labels):

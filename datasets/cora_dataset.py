@@ -194,11 +194,5 @@ class CoraDataset(InMemoryDataset):
 
 
 if __name__ == "__main__":
-    # fb_graph = download_cora()
-    # print(fb_graph.nodes(data=True))
-    # graphs = ESWR(fb_graph, 200, 100)
-    # G = download_cora()
-    # print(G)
-    o
 
     dataset = CoraDataset(os.getcwd()+'/original_datasets/'+'cora')
