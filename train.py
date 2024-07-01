@@ -361,8 +361,6 @@ def run(args):
 
     # Training loop
     for epoch in tqdm(range(1, args.epochs + 1)):
-        print(device, torch.cuda.is_available())
-        quit()
         fin_model_loss = 0.
         fin_view_loss = 0.
         fin_reg = 0.
