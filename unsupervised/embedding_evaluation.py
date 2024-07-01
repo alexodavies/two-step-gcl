@@ -444,7 +444,10 @@ class TargetEvaluation():
 					selected_y = selected_y.cpu().numpy().tolist()
 
 				train_targets += selected_y
+
+		print(train_targets, type(train_targets[0]), len(train_targets))
 		train_targets = self.tidy_labels(train_targets).flatten()
+		print(train_targets, type(train_targets))
 
 		self.n_samples = val_targets.shape[0]
 		if type(val_targets[0]) is int or type(val_targets[0]) is np.int64:
@@ -489,23 +492,28 @@ class TargetEvaluation():
 
 		if type(labels[0]) is not list:
 			if np.sum(labels) == np.sum(np.array(labels).astype(int)):
+				print("case one")
 				labels = np.array(labels).astype(int)
 			else:
+				print("case two")
 				labels = np.array(labels)
 			return labels
 
-		# Could be lists of floats
-		elif type(labels[0][0]) is float:
-			return np.array(labels)
+
 
 		# Possibility of one-hot labels
-		elif np.sum(labels[0][0]) == 1 and type(labels[0][0]) is int:
-
+		elif np.sum(labels[0]) == 1 and type(labels[0][0]) is int:
+			print("One-Hot Labels")
 			new_labels = []
 			for label in labels:
 				new_labels.append(np.argmax(label))
 
 			return np.array(new_labels)
+		
+
+		# Could be lists of floats
+		elif type(labels[0][0]) is float:
+			return np.array(labels)
 
 		else:
 			return np.array(labels)

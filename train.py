@@ -26,7 +26,7 @@ from torch_scatter import scatter
 from tqdm import tqdm
 
 # from datasets.loaders import get_train_loader, get_val_loaders, get_test_loaders
-from bgd import get_train_datasets, get_val_datasets, get_test_datasets, get_datasets
+from bgd import get_train_datasets, get_val_datasets, get_test_datasets, get_datasets, get_graph_task_datasets
 from top import ToPDataset
 from unsupervised.embedding_evaluation import GeneralEmbeddingEvaluation
 from unsupervised.encoder import Encoder
@@ -329,11 +329,11 @@ def run(args):
     dataloader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
     # dataloader = get_train_loader(args.batch_size, my_transforms, subset=dataset_subset, social_excludes=excludes)
 
-    val_loaders, names = get_val_datasets(my_transforms, num = 500, excludes = ["ogbg-molpcba"])
-    val_loaders = [DataLoader(ToPDataset(dataset, stage = "val"), batch_size=args.batch_size, shuffle=True) for dataset in val_loaders]
+    val_loaders, names = get_val_datasets(my_transforms, num = 500, exclude = ["ogbg-molpcba"])
+    val_loaders = [DataLoader(ToPDataset(dataset, stage = "val"), batch_size=32, shuffle=True) for dataset in val_loaders]
 
-    test_loaders, names = get_test_datasets(args.batch_size, my_transforms, num = 200, excludes = ["ogbg-molpcba"])
-    test_loaders = [DataLoader(ToPDataset(dataset, stage = "test"), batch_size=args.batch_size, shuffle=True) for dataset in test_loaders]
+    test_loaders, names = get_test_datasets(my_transforms, num = 200, exclude = ["ogbg-molpcba"])
+    test_loaders = [DataLoader(ToPDataset(dataset, stage = "test"), batch_size=32, shuffle=True) for dataset in test_loaders]
 
     # View learner and encoder use the same basic architecture
     model = GInfoMinMax(Encoder(emb_dim=args.emb_dim, num_gc_layers=args.num_gc_layers, drop_ratio=args.drop_ratio, pooling_type=args.pooling_type, convolution=args.backbone),
