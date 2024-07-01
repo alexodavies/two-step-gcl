@@ -321,7 +321,7 @@ def run(args):
                  "ogbg-molbbbp", "ogbg-molbace"]
 
     print(f"Passing subset: {dataset_subset}\n")
-    train_datasets, train_names = get_datasets(my_transforms, num=50000, exclude = ["random", "community", "trees" + molecule_excludes)
+    train_datasets, train_names = get_datasets(my_transforms, num=50000, exclude = ["random", "community", "trees"] + molecule_excludes)
     train_dataset = ToPDataset(train_datasets[0])
     for dataset in train_datasets[1:]:
         train_dataset += ToPDataset(dataset)
