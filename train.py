@@ -321,7 +321,7 @@ def run(args):
                  "ogbg-molbbbp", "ogbg-molbace"]
 
     print(f"Passing subset: {dataset_subset}\n")
-    train_datasets, train_names = get_datasets(my_transforms, num=5000, exclude = ["random", "community", "trees"] + molecule_excludes)
+    train_datasets, train_names = get_datasets(my_transforms, num=50000, exclude = ["random", "community", "trees" + molecule_excludes)
     train_dataset = ToPDataset(train_datasets[0])
     for dataset in train_datasets[1:]:
         train_dataset += ToPDataset(dataset)
@@ -329,10 +329,10 @@ def run(args):
     dataloader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
     # dataloader = get_train_loader(args.batch_size, my_transforms, subset=dataset_subset, social_excludes=excludes)
 
-    val_loaders, names = get_val_datasets(my_transforms, num = 500, exclude = ["ogbg-molpcba"])
+    val_loaders, names = get_val_datasets(my_transforms, num = 5000, exclude = ["ogbg-molpcba"])
     val_loaders = [DataLoader(ToPDataset(dataset, stage = "val"), batch_size=32, shuffle=True) for dataset in val_loaders]
 
-    test_loaders, names = get_test_datasets(my_transforms, num = 200, exclude = ["ogbg-molpcba"])
+    test_loaders, names = get_test_datasets(my_transforms, num = 2000, exclude = ["ogbg-molpcba"])
     test_loaders = [DataLoader(ToPDataset(dataset, stage = "test"), batch_size=32, shuffle=True) for dataset in test_loaders]
 
     # View learner and encoder use the same basic architecture
