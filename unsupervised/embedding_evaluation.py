@@ -445,9 +445,7 @@ class TargetEvaluation():
 
 				train_targets += selected_y
 
-		print(train_targets, type(train_targets[0]), len(train_targets))
 		train_targets = self.tidy_labels(train_targets).flatten()
-		print(train_targets, type(train_targets))
 
 		self.n_samples = val_targets.shape[0]
 		if type(val_targets[0]) is int or type(val_targets[0]) is np.int64:
