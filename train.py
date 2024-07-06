@@ -334,7 +334,7 @@ def run(args):
     val_loaders = [DataLoader(ToPDataset(dataset, stage = "val"), batch_size=32, shuffle=True) for dataset in val_loaders]
 
     # test_loaders, names = get_test_datasets(my_transforms, num = 200, exclude = ["ogbg-molpcba"])
-    val_loaders, names = get_graph_task_datasets(my_transforms, num = 200, stage = "test")
+    test_loaders, names = get_graph_task_datasets(my_transforms, num = 200, stage = "test")
     test_loaders = [DataLoader(ToPDataset(dataset, stage = "test"), batch_size=32, shuffle=True) for dataset in test_loaders]
 
     # View learner and encoder use the same basic architecture
